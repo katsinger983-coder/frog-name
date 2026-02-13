@@ -72,9 +72,7 @@ h1 {
 .next-food-btn,
 .overlay p,
 .overlay h2,
-.hints-panel,
-.music-panel,
-.mode-switch {
+.music-panel {
   font-size: 14px;
 }
 
@@ -83,7 +81,6 @@ h1 {
   min-width: 0;
 }
 
-.mode-switch,
 .music-panel {
   display: flex;
   gap: 6px;
@@ -255,6 +252,19 @@ h1 {
   box-shadow: 0 5px 10px #00000022;
 }
 
+.yum-badge {
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  background: #2f8f49;
+  color: #fff;
+  border-radius: 999px;
+  padding: 3px 7px;
+  font-size: 12px;
+  font-weight: 800;
+  box-shadow: 0 5px 10px #00000022;
+}
+
 .center-panel {
   grid-area: center;
   align-self: center;
@@ -363,19 +373,6 @@ h1 {
 .message.is-error {
   color: #a31212;
   background: #ffe2e2;
-}
-
-.hints-panel {
-  border: 1px dashed #b7d9bf;
-  border-radius: 10px;
-  background: #f4fff5;
-  padding: 8px;
-  font-size: 12px;
-  line-height: 1.35;
-}
-
-.hints-panel.hidden {
-  display: none;
 }
 
 .overlay {
@@ -550,9 +547,6 @@ h1 {
     font-size: 13px;
   }
 
-  .hints-panel {
-    font-size: 12px;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {

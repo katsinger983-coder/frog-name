@@ -30,10 +30,6 @@ const liveAnnouncerEl = document.getElementById("live-announcer");
 const foodEmojiEl = document.getElementById("food-emoji");
 const foodLabelEl = document.getElementById("food-label");
 const nextFoodBtn = document.getElementById("next-food-btn");
-const hintsPanelEl = document.getElementById("hints-panel");
-
-const modeEasyBtn = document.getElementById("mode-easy");
-const modeHardBtn = document.getElementById("mode-hard");
 const newGameBtn = document.getElementById("new-game-btn");
 
 const musicToggleEl = document.getElementById("music-toggle");
@@ -57,7 +53,6 @@ let currentFoodId = null;
 let isAnimating = false;
 let isRevealing = false;
 let messageTimerId = null;
-let mode = "easy";
 let musicState = "off"; // off | on | error
 
 function announce(text) {
@@ -107,22 +102,6 @@ function setMessage(text, tone = "normal") {
       messageTimerId = null;
     }, 900);
   }
-}
-
-function setMode(nextMode) {
-  mode = nextMode;
-  modeEasyBtn.classList.toggle("is-active", mode === "easy");
-  modeHardBtn.classList.toggle("is-active", mode === "hard");
-  hintsPanelEl.classList.toggle("hidden", mode === "hard");
-}
-
-function renderHints() {
-  hintsPanelEl.innerHTML = frogs
-    .map((frog) => {
-      const food = getFoodById(frog.foodId);
-      return `<div>${frog.name} → ${food ? food.label : "?"}</div>`;
-    })
-    .join("");
 }
 
 function setCenterFood(foodId) {
@@ -225,6 +204,27 @@ function showWrongBadge(frogId) {
 
   setTimeout(() => {
     frogEl.classList.remove("is-wrong");
+    badge.remove();
+  }, 900);
+}
+
+function showYumBadge(frogId) {
+  const frogEl = document.querySelector(`[data-frog-id="${frogId}"]`);
+  if (!frogEl) {
+    return;
+  }
+
+  const existing = frogEl.querySelector(".yum-badge");
+  if (existing) {
+    existing.remove();
+  }
+
+  const badge = document.createElement("span");
+  badge.className = "yum-badge";
+  badge.textContent = "Омномном";
+  frogEl.appendChild(badge);
+
+  setTimeout(() => {
     badge.remove();
   }, 900);
 }
@@ -341,7 +341,8 @@ async function handleFrogClick(frogId) {
   if (frog.foodId === foodIdForThrow) {
     fedSet.add(frogId);
     markFrogFed(frogId);
-    setMessage(`${frog.name} получила ${foodForThrow.label}. Отлично.`);
+    showYumBadge(frogId);
+    setMessage(`${frog.name}: «Омномном!»`);
     announce(`${frog.name} сыта.`);
 
     if (fedSet.size === frogs.length) {
@@ -363,7 +364,7 @@ async function handleFrogClick(frogId) {
 function resetFrogs() {
   document.querySelectorAll(".frog").forEach((frogEl) => {
     frogEl.classList.remove("fed", "is-wrong");
-    frogEl.querySelectorAll(".wrong-badge").forEach((badge) => badge.remove());
+    frogEl.querySelectorAll(".wrong-badge, .yum-badge").forEach((badge) => badge.remove());
 
     const stateEl = frogEl.querySelector(".frog-state");
     if (stateEl) {
@@ -479,8 +480,6 @@ function ensureElements() {
       foodEmojiEl &&
       foodLabelEl &&
       nextFoodBtn &&
-      modeEasyBtn &&
-      modeHardBtn &&
       newGameBtn &&
       musicToggleEl &&
       musicVolumeEl &&
@@ -516,9 +515,6 @@ function initEvents() {
     prepareStartOverlay();
   });
 
-  modeEasyBtn.addEventListener("click", () => setMode("easy"));
-  modeHardBtn.addEventListener("click", () => setMode("hard"));
-
   musicToggleEl.addEventListener("click", toggleMusic);
   musicVolumeEl.addEventListener("input", updateVolume);
 }
@@ -548,8 +544,6 @@ function initGame() {
     return;
   }
 
-  renderHints();
-  setMode("easy");
   initEvents();
   initMusicState();
   resetFrogs();
