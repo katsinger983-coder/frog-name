@@ -390,6 +390,11 @@ function startGame() {
   playAgainBtn.hidden = true;
   nextFoodBtn.disabled = false;
 
+  // Browsers block autoplay without user gesture, so start music on Start click.
+  if (musicState !== "on") {
+    setMusicState("on");
+  }
+
   revealFood("wine");
 
   clearInterval(timerId);
@@ -532,7 +537,8 @@ function initMusicState() {
   } else if (savedState === "error") {
     musicState = "error";
   } else {
-    musicState = "off";
+    // Default intent: music enabled; actual playback begins on first user click.
+    musicState = "on";
   }
 
   updateMusicButton();
