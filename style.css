@@ -250,7 +250,7 @@ h1 {
   left: 50%;
   bottom: 36px;
   transform: translateX(-50%);
-  font-size: clamp(1.3rem, 2.2vw, 2rem);
+  font-size: clamp(1.9rem, 3.4vw, 3rem);
   line-height: 1;
 }
 
@@ -326,7 +326,7 @@ h1 {
 .flying-food {
   position: absolute;
   transform: translate(-50%, -50%);
-  font-size: clamp(2.2rem, 4vw, 3rem);
+  font-size: clamp(2.8rem, 4.8vw, 3.8rem);
   line-height: 1;
   pointer-events: none;
   z-index: 5;
@@ -453,7 +453,7 @@ h1 {
 
   .food-emoji {
     bottom: 24px;
-    font-size: 1.05rem;
+    font-size: 1.6rem;
   }
 
   .food-label {
