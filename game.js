@@ -17,24 +17,36 @@ const foods = [
 ];
 
 const GAME_SECONDS = 60;
+const MUSIC_STORAGE_KEY = "frog_game_music_on";
+const MUSIC_VOLUME_STORAGE_KEY = "frog_game_music_volume";
 
-const ringEl = document.getElementById("ring");
-const centerBoxEl = document.getElementById("center-box");
+const boardEl = document.getElementById("board");
+const centerPanelEl = document.getElementById("center-panel");
 const fedCountEl = document.getElementById("fed-count");
 const mistakesEl = document.getElementById("mistakes");
 const timeEl = document.getElementById("time");
 const messageEl = document.getElementById("message");
+const liveAnnouncerEl = document.getElementById("live-announcer");
 const foodEmojiEl = document.getElementById("food-emoji");
 const foodLabelEl = document.getElementById("food-label");
 const nextFoodBtn = document.getElementById("next-food-btn");
+const hintsPanelEl = document.getElementById("hints-panel");
+
+const modeEasyBtn = document.getElementById("mode-easy");
+const modeHardBtn = document.getElementById("mode-hard");
+const newGameBtn = document.getElementById("new-game-btn");
+
 const musicToggleEl = document.getElementById("music-toggle");
+const musicVolumeEl = document.getElementById("music-volume");
 const bgMusicEl = document.getElementById("bg-music");
+
 const overlay = document.getElementById("overlay");
 const overlayTitle = document.getElementById("overlay-title");
 const overlayText = document.getElementById("overlay-text");
 const startBtn = document.getElementById("start-btn");
+const playAgainBtn = document.getElementById("play-again-btn");
 
-const MUSIC_STORAGE_KEY = "frog_game_music_on";
+const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 let running = false;
 let timeLeft = GAME_SECONDS;
@@ -45,7 +57,19 @@ let currentFoodId = null;
 let isAnimating = false;
 let isRevealing = false;
 let messageTimerId = null;
-let musicOn = false;
+let mode = "easy";
+let musicState = "off"; // off | on | error
+
+function announce(text) {
+  if (!liveAnnouncerEl) {
+    return;
+  }
+  liveAnnouncerEl.textContent = text;
+}
+
+function getFoodById(foodId) {
+  return foods.find((food) => food.id === foodId) || null;
+}
 
 function getAvailableFoodIds() {
   return frogs
@@ -58,7 +82,6 @@ function randomAvailableFoodId() {
   if (availableFoodIds.length === 0) {
     return null;
   }
-
   const index = Math.floor(Math.random() * availableFoodIds.length);
   return availableFoodIds[index];
 }
@@ -82,54 +105,33 @@ function setMessage(text, tone = "normal") {
     messageTimerId = setTimeout(() => {
       messageEl.classList.remove("is-error");
       messageTimerId = null;
-    }, 1500);
+    }, 900);
   }
 }
 
-function updateMusicButton() {
-  if (!musicToggleEl) {
-    return;
-  }
-
-  musicToggleEl.textContent = musicOn ? "Музыка: вкл" : "Музыка: выкл";
+function setMode(nextMode) {
+  mode = nextMode;
+  modeEasyBtn.classList.toggle("is-active", mode === "easy");
+  modeHardBtn.classList.toggle("is-active", mode === "hard");
+  hintsPanelEl.classList.toggle("hidden", mode === "hard");
 }
 
-async function setMusicState(nextState) {
-  if (!bgMusicEl) {
-    return;
-  }
-
-  musicOn = nextState;
-  localStorage.setItem(MUSIC_STORAGE_KEY, musicOn ? "1" : "0");
-  updateMusicButton();
-
-  if (!musicOn) {
-    bgMusicEl.pause();
-    return;
-  }
-
-  try {
-    bgMusicEl.volume = 0.35;
-    await bgMusicEl.play();
-  } catch (_error) {
-    musicOn = false;
-    localStorage.setItem(MUSIC_STORAGE_KEY, "0");
-    updateMusicButton();
-    setMessage("Не удалось включить музыку. Проверь файл audio/bg.mp3.");
-  }
-}
-
-function toggleMusic() {
-  setMusicState(!musicOn);
+function renderHints() {
+  hintsPanelEl.innerHTML = frogs
+    .map((frog) => {
+      const food = getFoodById(frog.foodId);
+      return `<div>${frog.name} → ${food ? food.label : "?"}</div>`;
+    })
+    .join("");
 }
 
 function setCenterFood(foodId) {
   currentFoodId = foodId;
-  const food = foods.find((item) => item.id === foodId);
+  const food = getFoodById(foodId);
 
   if (!food) {
     foodEmojiEl.textContent = "❔";
-    foodLabelEl.textContent = "Нет еды";
+    foodLabelEl.textContent = "нет еды";
     return;
   }
 
@@ -138,9 +140,7 @@ function setCenterFood(foodId) {
 }
 
 function wait(ms) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 async function revealFood(foodId) {
@@ -149,24 +149,33 @@ async function revealFood(foodId) {
     return;
   }
 
-  const food = foods.find((item) => item.id === foodId);
+  const food = getFoodById(foodId);
   if (!food) {
     return;
   }
 
   isRevealing = true;
   nextFoodBtn.disabled = true;
-  centerBoxEl.classList.remove("reveal-done", "lid-fly");
-  centerBoxEl.classList.add("lid-shake");
+
+  if (reducedMotion) {
+    setCenterFood(foodId);
+    centerPanelEl.classList.add("reveal-done");
+    nextFoodBtn.disabled = false;
+    isRevealing = false;
+    return;
+  }
+
+  centerPanelEl.classList.remove("reveal-done", "lid-fly");
+  centerPanelEl.classList.add("lid-shake");
   setCenterFood(null);
 
-  await wait(430);
-  centerBoxEl.classList.remove("lid-shake");
-  centerBoxEl.classList.add("lid-fly");
+  await wait(260);
+  centerPanelEl.classList.remove("lid-shake");
+  centerPanelEl.classList.add("lid-fly");
   setCenterFood(foodId);
 
-  await wait(510);
-  centerBoxEl.classList.add("reveal-done");
+  await wait(280);
+  centerPanelEl.classList.add("reveal-done");
   nextFoodBtn.disabled = false;
   isRevealing = false;
 }
@@ -177,7 +186,7 @@ function rollFood() {
   }
 
   revealFood(randomAvailableFoodId());
-  setMessage("Поднос открылся. Накорми жабу.");
+  setMessage("Поднос открыт. Теперь нажми на жабу.");
 }
 
 function markFrogFed(frogId) {
@@ -193,47 +202,62 @@ function markFrogFed(frogId) {
   }
 }
 
-function flashWrongFrog(frogId) {
+function showWrongBadge(frogId) {
   const frogEl = document.querySelector(`[data-frog-id="${frogId}"]`);
   if (!frogEl) {
     return;
   }
 
   frogEl.classList.remove("is-wrong");
+  const existing = frogEl.querySelector(".wrong-badge");
+  if (existing) {
+    existing.remove();
+  }
+
+  const badge = document.createElement("span");
+  badge.className = "wrong-badge";
+  badge.textContent = "Буэээ";
+  frogEl.appendChild(badge);
+
   requestAnimationFrame(() => {
     frogEl.classList.add("is-wrong");
   });
 
   setTimeout(() => {
     frogEl.classList.remove("is-wrong");
-  }, 1200);
+    badge.remove();
+  }, 900);
 }
 
-function getElementCenterInRing(element) {
-  const ringRect = ringEl.getBoundingClientRect();
+function getElementCenterInBoard(element) {
+  const boardRect = boardEl.getBoundingClientRect();
   const rect = element.getBoundingClientRect();
 
   return {
-    x: rect.left - ringRect.left + rect.width / 2,
-    y: rect.top - ringRect.top + rect.height / 2
+    x: rect.left - boardRect.left + rect.width / 2,
+    y: rect.top - boardRect.top + rect.height / 2
   };
 }
 
 function animateFoodFlight(food, frogId) {
+  if (reducedMotion) {
+    return Promise.resolve();
+  }
+
   const frogEl = document.querySelector(`[data-frog-id="${frogId}"]`);
   if (!frogEl || !food) {
     return Promise.resolve();
   }
 
-  const start = getElementCenterInRing(centerBoxEl);
-  const end = getElementCenterInRing(frogEl);
+  const start = getElementCenterInBoard(centerPanelEl);
+  const end = getElementCenterInBoard(frogEl);
 
   const flyingFoodEl = document.createElement("div");
   flyingFoodEl.className = "flying-food";
   flyingFoodEl.textContent = food.emoji;
   flyingFoodEl.style.left = `${start.x}px`;
   flyingFoodEl.style.top = `${start.y}px`;
-  ringEl.appendChild(flyingFoodEl);
+  boardEl.appendChild(flyingFoodEl);
 
   return new Promise((resolve) => {
     const cleanup = () => {
@@ -242,10 +266,7 @@ function animateFoodFlight(food, frogId) {
       resolve();
     };
 
-    const onDone = () => {
-      cleanup();
-    };
-
+    const onDone = () => cleanup();
     flyingFoodEl.addEventListener("transitionend", onDone, { once: true });
 
     requestAnimationFrame(() => {
@@ -255,7 +276,7 @@ function animateFoodFlight(food, frogId) {
       });
     });
 
-    setTimeout(cleanup, 700);
+    setTimeout(cleanup, 550);
   });
 }
 
@@ -266,15 +287,17 @@ function finishGame(win) {
   clearInterval(timerId);
   timerId = null;
   overlay.hidden = false;
-  ringEl.style.pointerEvents = "none";
-  startBtn.textContent = "Играть снова";
+  startBtn.hidden = true;
+  playAgainBtn.hidden = false;
 
   if (win) {
     overlayTitle.textContent = "Победа!";
     overlayText.textContent = `Все жабы накормлены. Ошибок: ${mistakes}.`;
+    announce("Победа. Все жабы накормлены.");
   } else {
     overlayTitle.textContent = "Время вышло";
     overlayText.textContent = `Накормлено: ${fedSet.size}/6. Ошибок: ${mistakes}.`;
+    announce("Время вышло.");
   }
 }
 
@@ -284,7 +307,7 @@ async function handleFrogClick(frogId) {
   }
 
   if (!currentFoodId) {
-    setMessage("Открой поднос и накорми жабу.");
+    setMessage("Сначала открой поднос.");
     return;
   }
 
@@ -299,7 +322,7 @@ async function handleFrogClick(frogId) {
   }
 
   const foodIdForThrow = currentFoodId;
-  const foodForThrow = foods.find((item) => item.id === foodIdForThrow);
+  const foodForThrow = getFoodById(foodIdForThrow);
   if (!foodForThrow) {
     return;
   }
@@ -319,6 +342,7 @@ async function handleFrogClick(frogId) {
     fedSet.add(frogId);
     markFrogFed(frogId);
     setMessage(`${frog.name} получила ${foodForThrow.label}. Отлично.`);
+    announce(`${frog.name} сыта.`);
 
     if (fedSet.size === frogs.length) {
       updateHud();
@@ -327,8 +351,9 @@ async function handleFrogClick(frogId) {
     }
   } else {
     mistakes += 1;
-    flashWrongFrog(frogId);
+    showWrongBadge(frogId);
     setMessage("Эта жаба сказала вам: «Буэээ»", "error");
+    announce("Ошибка: эта жаба не ест эту еду.");
   }
 
   updateHud();
@@ -337,7 +362,9 @@ async function handleFrogClick(frogId) {
 
 function resetFrogs() {
   document.querySelectorAll(".frog").forEach((frogEl) => {
-    frogEl.classList.remove("fed");
+    frogEl.classList.remove("fed", "is-wrong");
+    frogEl.querySelectorAll(".wrong-badge").forEach((badge) => badge.remove());
+
     const stateEl = frogEl.querySelector(".frog-state");
     if (stateEl) {
       stateEl.textContent = "Голодная жаба";
@@ -348,17 +375,20 @@ function resetFrogs() {
 function startGame() {
   running = true;
   isAnimating = false;
+  isRevealing = false;
   timeLeft = GAME_SECONDS;
   mistakes = 0;
   fedSet = new Set();
-  nextFoodBtn.disabled = false;
 
   resetFrogs();
   updateHud();
   setCenterFood(null);
   setMessage("Накорми жабу.");
   overlay.hidden = true;
-  ringEl.style.pointerEvents = "auto";
+  startBtn.hidden = true;
+  playAgainBtn.hidden = true;
+  nextFoodBtn.disabled = false;
+
   revealFood("wine");
 
   clearInterval(timerId);
@@ -372,32 +402,98 @@ function startGame() {
   }, 1000);
 }
 
+function prepareStartOverlay() {
+  running = false;
+  overlay.hidden = false;
+  overlayTitle.textContent = "Готова кормить жаб?";
+  overlayText.textContent = "Накорми всех жаб правильной едой до конца таймера.";
+  startBtn.hidden = false;
+  playAgainBtn.hidden = true;
+}
+
+function updateMusicButton() {
+  if (musicState === "on") {
+    musicToggleEl.textContent = "Музыка: вкл";
+  } else if (musicState === "error") {
+    musicToggleEl.textContent = "Музыка: ошибка";
+  } else {
+    musicToggleEl.textContent = "Музыка: выкл";
+  }
+}
+
+async function setMusicState(nextState) {
+  if (!bgMusicEl) {
+    return;
+  }
+
+  if (nextState === "off") {
+    musicState = "off";
+    bgMusicEl.pause();
+    localStorage.setItem(MUSIC_STORAGE_KEY, "off");
+    updateMusicButton();
+    return;
+  }
+
+  try {
+    bgMusicEl.volume = Number(musicVolumeEl.value) / 100;
+    await bgMusicEl.play();
+    musicState = "on";
+    localStorage.setItem(MUSIC_STORAGE_KEY, "on");
+  } catch (_error) {
+    musicState = "error";
+    localStorage.setItem(MUSIC_STORAGE_KEY, "error");
+    setMessage("Не удалось включить музыку. Проверь файл audio/bg.mp3.");
+    announce("Ошибка загрузки музыки.");
+  }
+
+  updateMusicButton();
+}
+
+function toggleMusic() {
+  if (musicState === "on") {
+    setMusicState("off");
+  } else {
+    setMusicState("on");
+  }
+}
+
+function updateVolume() {
+  if (!bgMusicEl || !musicVolumeEl) {
+    return;
+  }
+
+  const volume = Number(musicVolumeEl.value) / 100;
+  bgMusicEl.volume = volume;
+  localStorage.setItem(MUSIC_VOLUME_STORAGE_KEY, String(musicVolumeEl.value));
+}
+
 function ensureElements() {
   return Boolean(
-    ringEl &&
-      centerBoxEl &&
+    boardEl &&
+      centerPanelEl &&
       fedCountEl &&
       mistakesEl &&
       timeEl &&
       messageEl &&
+      liveAnnouncerEl &&
       foodEmojiEl &&
       foodLabelEl &&
       nextFoodBtn &&
+      modeEasyBtn &&
+      modeHardBtn &&
+      newGameBtn &&
       musicToggleEl &&
+      musicVolumeEl &&
       bgMusicEl &&
       overlay &&
       overlayTitle &&
       overlayText &&
-      startBtn
+      startBtn &&
+      playAgainBtn
   );
 }
 
-function initGame() {
-  if (!ensureElements()) {
-    console.error("Не найдены обязательные элементы игры в HTML.");
-    return;
-  }
-
+function initEvents() {
   document.querySelectorAll(".frog").forEach((frogEl) => {
     const frogId = frogEl.dataset.frogId;
     frogEl.addEventListener("click", () => {
@@ -407,13 +503,60 @@ function initGame() {
 
   nextFoodBtn.addEventListener("click", rollFood);
   startBtn.addEventListener("click", startGame);
-  musicToggleEl.addEventListener("click", toggleMusic);
+  playAgainBtn.addEventListener("click", startGame);
+  newGameBtn.addEventListener("click", () => {
+    clearInterval(timerId);
+    resetFrogs();
+    fedSet = new Set();
+    mistakes = 0;
+    timeLeft = GAME_SECONDS;
+    updateHud();
+    setCenterFood(null);
+    setMessage("Накорми жабу.");
+    prepareStartOverlay();
+  });
 
-  ringEl.style.pointerEvents = "none";
-  musicOn = localStorage.getItem(MUSIC_STORAGE_KEY) === "1";
+  modeEasyBtn.addEventListener("click", () => setMode("easy"));
+  modeHardBtn.addEventListener("click", () => setMode("hard"));
+
+  musicToggleEl.addEventListener("click", toggleMusic);
+  musicVolumeEl.addEventListener("input", updateVolume);
+}
+
+function initMusicState() {
+  const savedVolume = localStorage.getItem(MUSIC_VOLUME_STORAGE_KEY);
+  if (savedVolume && musicVolumeEl) {
+    musicVolumeEl.value = savedVolume;
+  }
+  updateVolume();
+
+  const savedState = localStorage.getItem(MUSIC_STORAGE_KEY);
+  if (savedState === "on") {
+    musicState = "on";
+  } else if (savedState === "error") {
+    musicState = "error";
+  } else {
+    musicState = "off";
+  }
+
   updateMusicButton();
+}
+
+function initGame() {
+  if (!ensureElements()) {
+    console.error("Не найдены обязательные элементы игры в HTML.");
+    return;
+  }
+
+  renderHints();
+  setMode("easy");
+  initEvents();
+  initMusicState();
+  resetFrogs();
   updateHud();
   setCenterFood(null);
+  setMessage("Накорми жабу.");
+  prepareStartOverlay();
 }
 
 if (document.readyState === "loading") {

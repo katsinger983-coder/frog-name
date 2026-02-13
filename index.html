@@ -8,19 +8,34 @@
 </head>
 <body>
   <main class="app">
-    <h1>Жабье кафе</h1>
-    <p class="hint">Жабы сидят по кругу. В центре коробка с едой. Кликни по жабе, чтобы дать ей текущую еду.</p>
+    <header class="top">
+      <h1>Жабье кафе</h1>
+      <p class="hint">Открой поднос, потом нажми на правильную жабу.</p>
+    </header>
 
-    <section class="hud">
-      <div>Накормлено: <span id="fed-count">0</span> / 6</div>
-      <div>Ошибки: <span id="mistakes">0</span></div>
-      <div>Время: <span id="time">60</span> сек</div>
-      <button id="music-toggle" class="music-toggle" type="button">Музыка: выкл</button>
+    <section class="hud" aria-label="Панель игры">
+      <div class="stat">Накормлено: <span id="fed-count">0</span> / 6</div>
+      <div class="stat">Ошибки: <span id="mistakes">0</span></div>
+      <div class="stat">Время: <span id="time">60</span> сек</div>
+
+      <div class="mode-switch" role="group" aria-label="Режим игры">
+        <button id="mode-easy" class="chip is-active" type="button">Легкий</button>
+        <button id="mode-hard" class="chip" type="button">Хард</button>
+      </div>
+
+      <div class="music-panel" role="group" aria-label="Музыка">
+        <button id="music-toggle" class="chip" type="button">Музыка: выкл</button>
+        <label class="volume-wrap" for="music-volume">Громкость
+          <input id="music-volume" type="range" min="0" max="100" value="35" />
+        </label>
+      </div>
+
+      <button id="new-game-btn" class="new-game-btn" type="button">Новая игра</button>
     </section>
 
     <section class="arena" aria-label="Игровое поле">
-      <div id="ring" class="ring">
-        <button class="frog pos-1" data-frog-id="irina" type="button">
+      <div id="board" class="board">
+        <button class="frog area-irina" data-frog-id="irina" type="button">
           <div class="frog-visual">
             <span class="frog-base" aria-hidden="true">🐸</span>
             <img class="frog-photo" src="images/irina.jpg" alt="Жаба Ирина" />
@@ -29,7 +44,7 @@
           <div class="frog-state">Голодная жаба</div>
         </button>
 
-        <button class="frog pos-2" data-frog-id="katya" type="button">
+        <button class="frog area-katya" data-frog-id="katya" type="button">
           <div class="frog-visual">
             <span class="frog-base" aria-hidden="true">🐸</span>
             <img class="frog-photo" src="images/katya.jpg" alt="Жаба Катя" />
@@ -38,7 +53,7 @@
           <div class="frog-state">Голодная жаба</div>
         </button>
 
-        <button class="frog pos-3" data-frog-id="dasha" type="button">
+        <button class="frog area-dasha" data-frog-id="dasha" type="button">
           <div class="frog-visual">
             <span class="frog-base" aria-hidden="true">🐸</span>
             <img class="frog-photo" src="images/dasha.jpg" alt="Жаба Даша" />
@@ -47,7 +62,7 @@
           <div class="frog-state">Голодная жаба</div>
         </button>
 
-        <button class="frog pos-4" data-frog-id="sasha" type="button">
+        <button class="frog area-sasha" data-frog-id="sasha" type="button">
           <div class="frog-visual">
             <span class="frog-base" aria-hidden="true">🐸</span>
             <img class="frog-photo" src="images/sasha.jpg" alt="Жаба Саша" />
@@ -56,7 +71,7 @@
           <div class="frog-state">Голодная жаба</div>
         </button>
 
-        <button class="frog pos-5" data-frog-id="veronika" type="button">
+        <button class="frog area-veronika" data-frog-id="veronika" type="button">
           <div class="frog-visual">
             <span class="frog-base" aria-hidden="true">🐸</span>
             <img class="frog-photo" src="images/veronika.jpg" alt="Жаба Вероника" />
@@ -65,7 +80,7 @@
           <div class="frog-state">Голодная жаба</div>
         </button>
 
-        <button class="frog pos-6" data-frog-id="olya" type="button">
+        <button class="frog area-olya" data-frog-id="olya" type="button">
           <div class="frog-visual">
             <span class="frog-base" aria-hidden="true">🐸</span>
             <img class="frog-photo" src="images/olya.jpg" alt="Жаба Оля" />
@@ -74,24 +89,32 @@
           <div class="frog-state">Голодная жаба</div>
         </button>
 
-        <div class="center-box" id="center-box" role="status" aria-live="polite">
-          <div class="tray">
+        <section id="center-panel" class="center-panel" aria-label="Поднос">
+          <div class="tray" aria-hidden="true">
             <div class="tray-base"></div>
             <div class="cloche-lid"></div>
             <div id="food-emoji" class="food-emoji">❔</div>
-            <div id="food-label" class="food-label">Нажми старт</div>
           </div>
-          <p id="message" class="message">Накорми жабу</p>
-          <button id="next-food-btn" class="next-food-btn" type="button">Открыть поднос</button>
-        </div>
+          <div class="current-food">Сейчас на подносе: <span id="food-label">нет еды</span></div>
+          <button id="next-food-btn" class="cta-btn" type="button">Открыть поднос</button>
+          <p class="cta-help">Теперь нажми на жабу</p>
+          <p id="message" class="message">Накорми жабу.</p>
+        </section>
       </div>
 
-      <div id="overlay" class="overlay">
+      <section id="hints-panel" class="hints-panel" aria-label="Подсказки"></section>
+
+      <div id="overlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="overlay-title">
         <h2 id="overlay-title">Готова кормить жаб?</h2>
         <p id="overlay-text">Накорми всех жаб правильной едой до конца таймера.</p>
-        <button id="start-btn" class="start-btn" type="button">Старт</button>
+        <div class="overlay-actions">
+          <button id="start-btn" class="start-btn" type="button">Старт</button>
+          <button id="play-again-btn" class="play-again-btn" type="button" hidden>Играть ещё</button>
+        </div>
       </div>
     </section>
+
+    <div id="live-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
   </main>
 
   <audio id="bg-music" src="audio/bg.mp3" loop preload="auto"></audio>
