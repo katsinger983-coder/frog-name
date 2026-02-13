@@ -61,6 +61,17 @@ h1 {
   font-size: clamp(0.8rem, 1.25vw, 1rem);
 }
 
+.music-toggle {
+  border: none;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  background: #2f8f49;
+  color: #fff;
+  cursor: pointer;
+}
+
 .arena {
   position: relative;
   flex: 1;
@@ -371,6 +382,11 @@ h1 {
     padding: 6px 8px;
     border-radius: 10px;
     font-size: 0.74rem;
+  }
+
+  .music-toggle {
+    padding: 3px 8px;
+    font-size: 0.68rem;
   }
 
   .arena {

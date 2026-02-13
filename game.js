@@ -27,10 +27,14 @@ const messageEl = document.getElementById("message");
 const foodEmojiEl = document.getElementById("food-emoji");
 const foodLabelEl = document.getElementById("food-label");
 const nextFoodBtn = document.getElementById("next-food-btn");
+const musicToggleEl = document.getElementById("music-toggle");
+const bgMusicEl = document.getElementById("bg-music");
 const overlay = document.getElementById("overlay");
 const overlayTitle = document.getElementById("overlay-title");
 const overlayText = document.getElementById("overlay-text");
 const startBtn = document.getElementById("start-btn");
+
+const MUSIC_STORAGE_KEY = "frog_game_music_on";
 
 let running = false;
 let timeLeft = GAME_SECONDS;
@@ -41,6 +45,7 @@ let currentFoodId = null;
 let isAnimating = false;
 let isRevealing = false;
 let messageTimerId = null;
+let musicOn = false;
 
 function getAvailableFoodIds() {
   return frogs
@@ -79,6 +84,43 @@ function setMessage(text, tone = "normal") {
       messageTimerId = null;
     }, 1500);
   }
+}
+
+function updateMusicButton() {
+  if (!musicToggleEl) {
+    return;
+  }
+
+  musicToggleEl.textContent = musicOn ? "Музыка: вкл" : "Музыка: выкл";
+}
+
+async function setMusicState(nextState) {
+  if (!bgMusicEl) {
+    return;
+  }
+
+  musicOn = nextState;
+  localStorage.setItem(MUSIC_STORAGE_KEY, musicOn ? "1" : "0");
+  updateMusicButton();
+
+  if (!musicOn) {
+    bgMusicEl.pause();
+    return;
+  }
+
+  try {
+    bgMusicEl.volume = 0.35;
+    await bgMusicEl.play();
+  } catch (_error) {
+    musicOn = false;
+    localStorage.setItem(MUSIC_STORAGE_KEY, "0");
+    updateMusicButton();
+    setMessage("Не удалось включить музыку. Проверь файл audio/bg.mp3.");
+  }
+}
+
+function toggleMusic() {
+  setMusicState(!musicOn);
 }
 
 function setCenterFood(foodId) {
@@ -324,6 +366,8 @@ function ensureElements() {
       foodEmojiEl &&
       foodLabelEl &&
       nextFoodBtn &&
+      musicToggleEl &&
+      bgMusicEl &&
       overlay &&
       overlayTitle &&
       overlayText &&
@@ -346,8 +390,11 @@ function initGame() {
 
   nextFoodBtn.addEventListener("click", rollFood);
   startBtn.addEventListener("click", startGame);
+  musicToggleEl.addEventListener("click", toggleMusic);
 
   ringEl.style.pointerEvents = "none";
+  musicOn = localStorage.getItem(MUSIC_STORAGE_KEY) === "1";
+  updateMusicButton();
   updateHud();
   setCenterFood(null);
 }
