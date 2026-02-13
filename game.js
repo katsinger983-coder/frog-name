@@ -1,5 +1,5 @@
 const frogs = [
-  { id: "irina", name: "Жаба Ирина", foodId: "shashlik" },
+  { id: "irina", name: "Жаба Ирина", foodId: "prosciutto" },
   { id: "katya", name: "Жаба Катя", foodId: "blini" },
   { id: "dasha", name: "Жаба Даша", foodId: "pelmeni" },
   { id: "sasha", name: "Жаба Саша", foodId: "pasta" },
@@ -8,7 +8,7 @@ const frogs = [
 ];
 
 const foods = [
-  { id: "shashlik", label: "Шашлык", emoji: "🍖" },
+  { id: "prosciutto", label: "Прошутто", emoji: "🥓" },
   { id: "wine", label: "Винишко", emoji: "🍷" },
   { id: "pelmeni", label: "Пельмешки", emoji: "🥟" },
   { id: "posikunchiki", label: "Посикунчики", emoji: "🥟" },
