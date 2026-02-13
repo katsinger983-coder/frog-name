@@ -514,41 +514,45 @@ h1 {
   }
 
   .board {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-rows: auto repeat(3, minmax(120px, auto));
-    align-items: stretch;
-    row-gap: 10px;
-    column-gap: 8px;
-    grid-template-areas:
-      "center center"
-      "irina katya"
-      "olya dasha"
-      "veronika sasha";
+    position: relative;
+    display: block;
+    min-height: clamp(470px, 61vh, 580px);
   }
 
   .arena {
     padding: 6px;
-    overflow: auto;
+    overflow: hidden;
   }
 
   .frog {
-    width: auto;
-    max-width: none;
-    min-height: 120px;
-    justify-self: stretch;
-    align-self: stretch;
+    position: absolute;
+    left: var(--frog-x, 50%);
+    top: var(--frog-y, 50%);
+    width: 98px;
+    min-height: 112px;
+    margin-left: -49px;
+    margin-top: -56px;
+    z-index: 2;
   }
 
   .frog-state {
     font-size: 12px;
   }
 
+  .area-irina { --frog-x: 50%; --frog-y: 14%; }
+  .area-katya { --frog-x: 82%; --frog-y: 33%; }
+  .area-dasha { --frog-x: 82%; --frog-y: 67%; }
+  .area-sasha { --frog-x: 50%; --frog-y: 86%; }
+  .area-veronika { --frog-x: 18%; --frog-y: 67%; }
+  .area-olya { --frog-x: 18%; --frog-y: 33%; }
+
   .center-panel {
-    width: min(100%, 300px);
-    margin-inline: auto;
-    margin-bottom: 4px;
-    position: relative;
-    z-index: 2;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: min(226px, 66vw);
+    z-index: 3;
   }
 
   .tray {
@@ -590,21 +594,35 @@ h1 {
 
 @media (max-width: 390px) {
   .frog {
-    max-width: 136px;
-    min-height: 112px;
+    width: 90px;
+    min-height: 106px;
+    margin-left: -45px;
+    margin-top: -53px;
   }
 
   .frog-visual {
-    height: 66px;
+    height: 62px;
   }
 
   .frog-base {
-    font-size: 2.6rem;
+    font-size: 2.4rem;
   }
 
   .frog-photo {
-    width: 36px;
-    height: 36px;
+    width: 34px;
+    height: 34px;
+  }
+
+  .frog-name {
+    font-size: 12px;
+  }
+
+  .frog-state {
+    font-size: 12px;
+  }
+
+  .center-panel {
+    width: min(206px, 68vw);
   }
 
   .current-food {
