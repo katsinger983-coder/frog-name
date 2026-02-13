@@ -95,8 +95,8 @@ h1 {
   position: absolute;
   width: clamp(86px, 12vw, 154px);
   min-height: 136px;
-  border: 2px solid #5eb373;
-  background: #d7f4dc;
+  border: 2px solid #d58f8f;
+  background: #ffe3e3;
   border-radius: 14px;
   padding: 4px 6px 6px;
   display: flex;
@@ -121,7 +121,7 @@ h1 {
 .frog-base {
   font-size: clamp(3.5rem, 5vw, 4.8rem);
   line-height: 1;
-  filter: hue-rotate(300deg) saturate(1.2) drop-shadow(0 6px 8px #00000022);
+  filter: drop-shadow(0 6px 8px #00000022);
 }
 
 .frog-photo {
@@ -133,7 +133,7 @@ h1 {
   height: clamp(42px, 4vw, 58px);
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid #d58f8f;
+  border: 3px solid #88bc95;
   box-shadow: 0 6px 14px #0000001a;
 }
 
@@ -158,7 +158,7 @@ h1 {
 }
 
 .frog.fed .frog-base {
-  filter: hue-rotate(0deg) saturate(1.05) drop-shadow(0 6px 8px #00000022);
+  filter: drop-shadow(0 6px 8px #00000022);
 }
 
 .frog.fed .frog-photo {
@@ -384,7 +384,7 @@ h1 {
   40% { transform: translate(-50%, -50%) translateX(5px); background: #ffd8d8; border-color: #d64a4a; }
   60% { transform: translate(-50%, -50%) translateX(-4px); background: #ffb7b7; border-color: #b72f2f; }
   80% { transform: translate(-50%, -50%) translateX(4px); background: #ffd8d8; border-color: #d64a4a; }
-  100% { transform: translate(-50%, -50%) translateX(0); background: #d7f4dc; border-color: #5eb373; }
+  100% { transform: translate(-50%, -50%) translateX(0); background: #ffe3e3; border-color: #d58f8f; }
 }
 
 @media (max-width: 980px) {
