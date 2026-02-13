@@ -189,7 +189,7 @@ function markFrogFed(frogId) {
   frogEl.classList.add("fed");
   const stateEl = frogEl.querySelector(".frog-state");
   if (stateEl) {
-    stateEl.textContent = "Сытая";
+    stateEl.textContent = "Сытая жаба";
   }
 }
 
@@ -323,7 +323,7 @@ function resetFrogs() {
     frogEl.classList.remove("fed");
     const stateEl = frogEl.querySelector(".frog-state");
     if (stateEl) {
-      stateEl.textContent = "Голодная";
+      stateEl.textContent = "Голодная жаба";
     }
   });
 }

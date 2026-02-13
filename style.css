@@ -418,7 +418,7 @@ h1 {
   }
 
   .frog-state {
-    display: none;
+    display: block;
   }
 
   .pos-1 { left: 50%; top: 10%; }
