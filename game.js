@@ -193,6 +193,22 @@ function markFrogFed(frogId) {
   }
 }
 
+function flashWrongFrog(frogId) {
+  const frogEl = document.querySelector(`[data-frog-id="${frogId}"]`);
+  if (!frogEl) {
+    return;
+  }
+
+  frogEl.classList.remove("is-wrong");
+  requestAnimationFrame(() => {
+    frogEl.classList.add("is-wrong");
+  });
+
+  setTimeout(() => {
+    frogEl.classList.remove("is-wrong");
+  }, 1200);
+}
+
 function getElementCenterInRing(element) {
   const ringRect = ringEl.getBoundingClientRect();
   const rect = element.getBoundingClientRect();
@@ -311,6 +327,7 @@ async function handleFrogClick(frogId) {
     }
   } else {
     mistakes += 1;
+    flashWrongFrog(frogId);
     setMessage("Эта жаба сказала вам: «Буэээ»", "error");
   }
 

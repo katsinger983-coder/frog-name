@@ -95,8 +95,8 @@ h1 {
   position: absolute;
   width: clamp(86px, 12vw, 154px);
   min-height: 136px;
-  border: 1px solid #c7dfcd;
-  background: var(--frog-bg);
+  border: 2px solid #5eb373;
+  background: #d7f4dc;
   border-radius: 14px;
   padding: 4px 6px 6px;
   display: flex;
@@ -121,7 +121,7 @@ h1 {
 .frog-base {
   font-size: clamp(3.5rem, 5vw, 4.8rem);
   line-height: 1;
-  filter: drop-shadow(0 6px 8px #00000022);
+  filter: hue-rotate(300deg) saturate(1.2) drop-shadow(0 6px 8px #00000022);
 }
 
 .frog-photo {
@@ -133,7 +133,7 @@ h1 {
   height: clamp(42px, 4vw, 58px);
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid #88bc95;
+  border: 3px solid #d58f8f;
   box-shadow: 0 6px 14px #0000001a;
 }
 
@@ -149,12 +149,24 @@ h1 {
 }
 
 .frog.fed {
-  background: #ecfff0;
-  border-color: #8cc59a;
+  background: #b9ecbe;
+  border-color: #3f9f58;
 }
 
 .frog.fed .frog-name {
   color: var(--frog-fed);
+}
+
+.frog.fed .frog-base {
+  filter: hue-rotate(0deg) saturate(1.05) drop-shadow(0 6px 8px #00000022);
+}
+
+.frog.fed .frog-photo {
+  border-color: #88bc95;
+}
+
+.frog.is-wrong {
+  animation: wrong-frog 0.55s ease-in-out 2;
 }
 
 .pos-1 { left: 50%; top: 13%; }
@@ -364,6 +376,15 @@ h1 {
   50% { transform: translateX(4px); }
   75% { transform: translateX(-3px); }
   100% { transform: translateX(0); }
+}
+
+@keyframes wrong-frog {
+  0% { transform: translate(-50%, -50%) translateX(0); background: #ffd8d8; border-color: #d64a4a; }
+  20% { transform: translate(-50%, -50%) translateX(-5px); background: #ffb7b7; border-color: #b72f2f; }
+  40% { transform: translate(-50%, -50%) translateX(5px); background: #ffd8d8; border-color: #d64a4a; }
+  60% { transform: translate(-50%, -50%) translateX(-4px); background: #ffb7b7; border-color: #b72f2f; }
+  80% { transform: translate(-50%, -50%) translateX(4px); background: #ffd8d8; border-color: #d64a4a; }
+  100% { transform: translate(-50%, -50%) translateX(0); background: #d7f4dc; border-color: #5eb373; }
 }
 
 @media (max-width: 980px) {
