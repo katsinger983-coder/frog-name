@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Жабье кафе</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app">
+    <h1>Жабье кафе</h1>
+    <p class="hint">Жабы сидят по кругу. В центре коробка с едой. Кликни по жабе, чтобы дать ей текущую еду.</p>
+
+    <section class="hud">
+      <div>Накормлено: <span id="fed-count">0</span> / 6</div>
+      <div>Ошибки: <span id="mistakes">0</span></div>
+      <div>Время: <span id="time">60</span> сек</div>
+    </section>
+
+    <section class="arena" aria-label="Игровое поле">
+      <div id="ring" class="ring">
+        <button class="frog pos-1" data-frog-id="irina" type="button">
+          <div class="frog-visual">
+            <span class="frog-base" aria-hidden="true">🐸</span>
+            <img class="frog-photo" src="images/irina.jpg" alt="Жаба Ирина" />
+          </div>
+          <div class="frog-name">Жаба Ирина</div>
+          <div class="frog-state">Голодная</div>
+        </button>
+
+        <button class="frog pos-2" data-frog-id="katya" type="button">
+          <div class="frog-visual">
+            <span class="frog-base" aria-hidden="true">🐸</span>
+            <img class="frog-photo" src="images/katya.jpg" alt="Жаба Катя" />
+          </div>
+          <div class="frog-name">Жаба Катя</div>
+          <div class="frog-state">Голодная</div>
+        </button>
+
+        <button class="frog pos-3" data-frog-id="dasha" type="button">
+          <div class="frog-visual">
+            <span class="frog-base" aria-hidden="true">🐸</span>
+            <img class="frog-photo" src="images/dasha.jpg" alt="Жаба Даша" />
+          </div>
+          <div class="frog-name">Жаба Даша</div>
+          <div class="frog-state">Голодная</div>
+        </button>
+
+        <button class="frog pos-4" data-frog-id="sasha" type="button">
+          <div class="frog-visual">
+            <span class="frog-base" aria-hidden="true">🐸</span>
+            <img class="frog-photo" src="images/sasha.jpg" alt="Жаба Саша" />
+          </div>
+          <div class="frog-name">Жаба Саша</div>
+          <div class="frog-state">Голодная</div>
+        </button>
+
+        <button class="frog pos-5" data-frog-id="veronika" type="button">
+          <div class="frog-visual">
+            <span class="frog-base" aria-hidden="true">🐸</span>
+            <img class="frog-photo" src="images/veronika.jpg" alt="Жаба Вероника" />
+          </div>
+          <div class="frog-name">Жаба Вероника</div>
+          <div class="frog-state">Голодная</div>
+        </button>
+
+        <button class="frog pos-6" data-frog-id="olya" type="button">
+          <div class="frog-visual">
+            <span class="frog-base" aria-hidden="true">🐸</span>
+            <img class="frog-photo" src="images/olya.jpg" alt="Жаба Оля" />
+          </div>
+          <div class="frog-name">Жаба Оля</div>
+          <div class="frog-state">Голодная</div>
+        </button>
+
+        <div class="center-box" id="center-box" role="status" aria-live="polite">
+          <div class="tray">
+            <div class="tray-base"></div>
+            <div class="cloche-lid"></div>
+            <div id="food-emoji" class="food-emoji">❔</div>
+            <div id="food-label" class="food-label">Нажми старт</div>
+          </div>
+          <p id="message" class="message">Накорми жабу</p>
+          <button id="next-food-btn" class="next-food-btn" type="button">Открыть поднос</button>
+        </div>
+      </div>
+
+      <div id="overlay" class="overlay">
+        <h2 id="overlay-title">Готова кормить жаб?</h2>
+        <p id="overlay-text">Накорми всех жаб правильной едой до конца таймера.</p>
+        <button id="start-btn" class="start-btn" type="button">Старт</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="game.js"></script>
+</body>
+</html>

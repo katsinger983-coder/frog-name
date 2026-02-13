@@ -1,0 +1,441 @@
+:root {
+  --bg1: #f4fff0;
+  --bg2: #d5f4d4;
+  --ink: #1d2a1e;
+  --line: #b9dcb9;
+  --panel: #ffffffdd;
+  --frog-bg: #f7fff7;
+  --frog-fed: #2f8f49;
+  --center: #fff4cf;
+  --btn: #2f8f49;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  height: 100vh;
+  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+  background: radial-gradient(circle at top, var(--bg1), var(--bg2));
+  color: var(--ink);
+  overflow: hidden;
+}
+
+.app {
+  width: min(1200px, 96vw);
+  height: 100vh;
+  margin-inline: auto;
+  padding: 8px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+h1,
+.hint {
+  text-align: center;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(1.1rem, 2.2vw, 1.7rem);
+}
+
+.hint {
+  margin: 4px 0 0;
+  font-size: clamp(0.75rem, 1.35vw, 0.95rem);
+}
+
+.hud {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 8px 10px;
+  font-weight: 700;
+  font-size: clamp(0.8rem, 1.25vw, 1rem);
+}
+
+.arena {
+  position: relative;
+  flex: 1;
+  border: 2px solid var(--line);
+  border-radius: 16px;
+  background: #fff;
+  padding: 10px;
+  isolation: isolate;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.ring {
+  position: relative;
+  height: 100%;
+  min-height: 520px;
+  z-index: 1;
+}
+
+.frog {
+  position: absolute;
+  width: clamp(86px, 12vw, 154px);
+  min-height: 136px;
+  border: 1px solid #c7dfcd;
+  background: var(--frog-bg);
+  border-radius: 14px;
+  padding: 4px 6px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  text-align: center;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  gap: 2px;
+}
+
+.frog-visual {
+  position: relative;
+  width: 100%;
+  height: 82px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.frog-base {
+  font-size: clamp(3.5rem, 5vw, 4.8rem);
+  line-height: 1;
+  filter: drop-shadow(0 6px 8px #00000022);
+}
+
+.frog-photo {
+  position: absolute;
+  left: 50%;
+  top: 43%;
+  transform: translate(-50%, -50%);
+  width: clamp(42px, 4vw, 58px);
+  height: clamp(42px, 4vw, 58px);
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #88bc95;
+  box-shadow: 0 6px 14px #0000001a;
+}
+
+.frog-name {
+  font-size: clamp(0.72rem, 0.95vw, 0.9rem);
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.frog-state {
+  margin-top: 2px;
+  font-size: clamp(0.64rem, 0.82vw, 0.78rem);
+}
+
+.frog.fed {
+  background: #ecfff0;
+  border-color: #8cc59a;
+}
+
+.frog.fed .frog-name {
+  color: var(--frog-fed);
+}
+
+.pos-1 { left: 50%; top: 13%; }
+.pos-2 { left: 76%; top: 30%; }
+.pos-3 { left: 76%; top: 70%; }
+.pos-4 { left: 50%; top: 84%; }
+.pos-5 { left: 24%; top: 70%; }
+.pos-6 { left: 24%; top: 30%; }
+
+.center-box {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: clamp(170px, 23vw, 290px);
+  min-height: 200px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0;
+  text-align: center;
+  z-index: 2;
+}
+
+.tray {
+  position: relative;
+  width: 150px;
+  height: 112px;
+  margin-top: 0;
+  z-index: 2;
+}
+
+.tray-base {
+  position: absolute;
+  left: 50%;
+  bottom: 20px;
+  transform: translateX(-50%);
+  width: 132px;
+  height: 18px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #f2f4f8, #bcc4ce);
+  border: 2px solid #8f98a3;
+  box-shadow: 0 3px 8px #00000020;
+}
+
+.cloche-lid {
+  position: absolute;
+  left: 50%;
+  bottom: 31px;
+  transform: translateX(-50%);
+  width: 124px;
+  height: 60px;
+  border-radius: 90px 90px 24px 24px;
+  background: radial-gradient(circle at 30% 26%, #ffffff, #c5ced8);
+  border: 2px solid #8f98a3;
+  box-shadow: 0 6px 12px #00000022;
+  transform-origin: 50% 85%;
+}
+
+.cloche-lid::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -8px;
+  transform: translateX(-50%);
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: #a3abb6;
+  border: 2px solid #7f8791;
+}
+
+.center-box.lid-shake .cloche-lid {
+  animation: lid-shake 0.42s ease-in-out;
+}
+
+.center-box.lid-fly .cloche-lid {
+  animation: lid-fly 0.55s cubic-bezier(0.18, 0.67, 0.35, 1) forwards;
+}
+
+.food-emoji,
+.food-label {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.food-emoji {
+  position: absolute;
+  left: 50%;
+  bottom: 36px;
+  transform: translateX(-50%);
+  font-size: clamp(1.3rem, 2.2vw, 2rem);
+  line-height: 1;
+}
+
+.food-label {
+  position: absolute;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  font-weight: 800;
+  font-size: clamp(0.62rem, 0.95vw, 0.85rem);
+  min-width: 80px;
+  white-space: nowrap;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: #efe6cd;
+  border: 2px solid #bfa977;
+}
+
+.center-box.reveal-done .food-emoji,
+.center-box.reveal-done .food-label {
+  opacity: 1;
+}
+
+.next-food-btn {
+  margin-top: 6px;
+  border: none;
+  border-radius: 10px;
+  padding: 6px 8px;
+  font-size: clamp(0.64rem, 1vw, 0.82rem);
+  font-weight: 700;
+  background: #806229;
+  color: #fff;
+  cursor: pointer;
+}
+
+.message {
+  margin: 6px 0 0;
+  font-weight: 700;
+  font-size: clamp(0.72rem, 1.05vw, 0.9rem);
+  text-align: center;
+  min-height: 18px;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 8px;
+  background: #f7fffce8;
+  padding: 14px;
+  border-radius: 14px;
+  z-index: 20;
+  pointer-events: auto;
+}
+
+.overlay[hidden] {
+  display: none;
+}
+
+.flying-food {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-size: clamp(2.2rem, 4vw, 3rem);
+  line-height: 1;
+  pointer-events: none;
+  z-index: 5;
+  transition: left 0.55s cubic-bezier(0.22, 0.61, 0.36, 1),
+    top 0.55s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.start-btn {
+  border: none;
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  background: var(--btn);
+  color: #fff;
+}
+
+@keyframes lid-shake {
+  0% { transform: translateX(-50%) rotate(0deg); }
+  25% { transform: translateX(-50%) rotate(-7deg); }
+  50% { transform: translateX(-50%) rotate(7deg); }
+  75% { transform: translateX(-50%) rotate(-6deg); }
+  100% { transform: translateX(-50%) rotate(0deg); }
+}
+
+@keyframes lid-fly {
+  0% { transform: translateX(-50%) translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateX(24px) translateY(-92px) rotate(30deg); opacity: 0; }
+}
+
+@media (max-width: 980px) {
+  .app {
+    width: 100vw;
+    height: 100dvh;
+    padding: 4px;
+    gap: 4px;
+  }
+
+  .hint {
+    display: none;
+  }
+
+  .hud {
+    padding: 6px 8px;
+    border-radius: 10px;
+    font-size: 0.74rem;
+  }
+
+  .arena {
+    padding: 5px;
+    border-radius: 12px;
+  }
+
+  .ring {
+    min-height: 0;
+  }
+
+  .frog {
+    width: clamp(78px, 22vw, 104px);
+    min-height: 114px;
+    border-radius: 10px;
+  }
+
+  .frog-visual {
+    height: 62px;
+  }
+
+  .frog-base {
+    font-size: clamp(2.9rem, 9vw, 3.7rem);
+  }
+
+  .frog-photo {
+    width: clamp(36px, 10vw, 46px);
+    height: clamp(36px, 10vw, 46px);
+  }
+
+  .frog-state {
+    display: none;
+  }
+
+  .pos-1 { left: 50%; top: 10%; }
+  .pos-2 { left: 82%; top: 30%; }
+  .pos-3 { left: 82%; top: 70%; }
+  .pos-4 { left: 50%; top: 86%; }
+  .pos-5 { left: 18%; top: 70%; }
+  .pos-6 { left: 18%; top: 30%; }
+
+  .center-box {
+    width: min(46vw, 180px);
+    min-height: 166px;
+  }
+
+  .tray {
+    width: 104px;
+    height: 78px;
+    margin-top: 0;
+  }
+
+  .tray-base {
+    width: 92px;
+    height: 12px;
+    bottom: 12px;
+  }
+
+  .cloche-lid {
+    width: 84px;
+    height: 42px;
+    bottom: 21px;
+  }
+
+  .food-emoji {
+    bottom: 24px;
+    font-size: 1.05rem;
+  }
+
+  .food-label {
+    bottom: 8px;
+    font-size: 0.58rem;
+  }
+
+  .next-food-btn {
+    padding: 5px 6px;
+    font-size: 0.62rem;
+  }
+
+  .message {
+    margin-top: 3px;
+    font-size: 0.68rem;
+    min-height: 16px;
+  }
+}
