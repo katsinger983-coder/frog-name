@@ -40,6 +40,7 @@ let fedSet = new Set();
 let currentFoodId = null;
 let isAnimating = false;
 let isRevealing = false;
+let messageTimerId = null;
 
 function getAvailableFoodIds() {
   return frogs
@@ -61,6 +62,23 @@ function updateHud() {
   fedCountEl.textContent = String(fedSet.size);
   mistakesEl.textContent = String(mistakes);
   timeEl.textContent = String(timeLeft);
+}
+
+function setMessage(text, tone = "normal") {
+  messageEl.textContent = text;
+  messageEl.classList.toggle("is-error", tone === "error");
+
+  if (messageTimerId) {
+    clearTimeout(messageTimerId);
+    messageTimerId = null;
+  }
+
+  if (tone === "error") {
+    messageTimerId = setTimeout(() => {
+      messageEl.classList.remove("is-error");
+      messageTimerId = null;
+    }, 1500);
+  }
 }
 
 function setCenterFood(foodId) {
@@ -117,7 +135,7 @@ function rollFood() {
   }
 
   revealFood(randomAvailableFoodId());
-  messageEl.textContent = "Поднос открылся. Накорми жабу.";
+  setMessage("Поднос открылся. Накорми жабу.");
 }
 
 function markFrogFed(frogId) {
@@ -208,12 +226,12 @@ async function handleFrogClick(frogId) {
   }
 
   if (!currentFoodId) {
-    messageEl.textContent = "Открой поднос и накорми жабу.";
+    setMessage("Открой поднос и накорми жабу.");
     return;
   }
 
   if (fedSet.has(frogId)) {
-    messageEl.textContent = "Эта жаба уже сытая.";
+    setMessage("Эта жаба уже сытая.");
     return;
   }
 
@@ -230,7 +248,7 @@ async function handleFrogClick(frogId) {
 
   isAnimating = true;
   nextFoodBtn.disabled = true;
-  messageEl.textContent = `${foodForThrow.label} летит к ${frog.name}...`;
+  setMessage(`${foodForThrow.label} летит к ${frog.name}...`);
   await animateFoodFlight(foodForThrow, frogId);
   isAnimating = false;
   nextFoodBtn.disabled = false;
@@ -242,7 +260,7 @@ async function handleFrogClick(frogId) {
   if (frog.foodId === foodIdForThrow) {
     fedSet.add(frogId);
     markFrogFed(frogId);
-    messageEl.textContent = `${frog.name} получила ${foodForThrow.label}. Отлично.`;
+    setMessage(`${frog.name} получила ${foodForThrow.label}. Отлично.`);
 
     if (fedSet.size === frogs.length) {
       updateHud();
@@ -251,7 +269,7 @@ async function handleFrogClick(frogId) {
     }
   } else {
     mistakes += 1;
-    messageEl.textContent = `${frog.name} это не ест.`;
+    setMessage("Эта жаба сказала вам: «Буэээ»", "error");
   }
 
   updateHud();
@@ -279,7 +297,7 @@ function startGame() {
   resetFrogs();
   updateHud();
   setCenterFood(null);
-  messageEl.textContent = "Накорми жабу.";
+  setMessage("Накорми жабу.");
   overlay.hidden = true;
   ringEl.style.pointerEvents = "auto";
   revealFood("wine");
