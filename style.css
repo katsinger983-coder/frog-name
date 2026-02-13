@@ -96,6 +96,7 @@ h1 {
   border: none;
   border-radius: 10px;
   padding: 7px 11px;
+  min-height: 40px;
   font-weight: 700;
   cursor: pointer;
 }
@@ -495,30 +496,52 @@ h1 {
 @media (max-width: 680px) {
   .app {
     min-height: 100dvh;
-    grid-template-rows: auto auto minmax(0, 1fr) auto;
+    padding: calc(6px + env(safe-area-inset-top)) 6px calc(8px + env(safe-area-inset-bottom));
+    gap: 6px;
+  }
+
+  .hud {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .music-panel {
+    justify-content: space-between;
+  }
+
+  #music-volume {
+    width: 120px;
   }
 
   .board {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    grid-template-rows: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: auto repeat(3, auto);
+    align-items: start;
     grid-template-areas:
-      ". irina ."
-      "olya center katya"
-      "veronika center dasha"
-      ". sasha .";
+      "center center"
+      "irina katya"
+      "olya dasha"
+      "veronika sasha";
   }
 
   .arena {
     padding: 6px;
+    overflow: auto;
   }
 
   .frog {
-    width: clamp(82px, 28vw, 105px);
-    min-height: 116px;
+    width: 100%;
+    max-width: 150px;
+    min-height: 120px;
   }
 
   .frog-state {
     font-size: 12px;
+  }
+
+  .center-panel {
+    width: min(100%, 240px);
+    margin-inline: auto;
   }
 
   .tray {
@@ -546,7 +569,30 @@ h1 {
   .current-food {
     font-size: 13px;
   }
+}
 
+@media (max-width: 390px) {
+  .frog {
+    max-width: 136px;
+    min-height: 112px;
+  }
+
+  .frog-visual {
+    height: 66px;
+  }
+
+  .frog-base {
+    font-size: 2.6rem;
+  }
+
+  .frog-photo {
+    width: 36px;
+    height: 36px;
+  }
+
+  .current-food {
+    font-size: 12px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
