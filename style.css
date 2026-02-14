@@ -516,7 +516,7 @@ h1 {
   .board {
     position: relative;
     display: block;
-    min-height: clamp(470px, 61vh, 580px);
+    min-height: clamp(560px, 70vh, 700px);
   }
 
   .arena {
@@ -528,10 +528,10 @@ h1 {
     position: absolute;
     left: var(--frog-x, 50%);
     top: var(--frog-y, 50%);
-    width: 98px;
-    min-height: 112px;
-    margin-left: -49px;
-    margin-top: -56px;
+    width: 96px;
+    min-height: 108px;
+    margin-left: -48px;
+    margin-top: -54px;
     z-index: 2;
   }
 
@@ -539,19 +539,19 @@ h1 {
     font-size: 12px;
   }
 
-  .area-irina { --frog-x: 50%; --frog-y: 14%; }
-  .area-katya { --frog-x: 82%; --frog-y: 33%; }
-  .area-dasha { --frog-x: 82%; --frog-y: 67%; }
-  .area-sasha { --frog-x: 50%; --frog-y: 86%; }
-  .area-veronika { --frog-x: 18%; --frog-y: 67%; }
-  .area-olya { --frog-x: 18%; --frog-y: 33%; }
+  .area-irina { --frog-x: 50%; --frog-y: 11%; }
+  .area-katya { --frog-x: 84%; --frog-y: 32%; }
+  .area-dasha { --frog-x: 84%; --frog-y: 68%; }
+  .area-sasha { --frog-x: 50%; --frog-y: 89%; }
+  .area-veronika { --frog-x: 16%; --frog-y: 68%; }
+  .area-olya { --frog-x: 16%; --frog-y: 32%; }
 
   .center-panel {
     position: absolute;
     left: 50%;
-    top: 50%;
+    top: 51%;
     transform: translate(-50%, -50%);
-    width: min(226px, 66vw);
+    width: min(236px, 64vw);
     z-index: 3;
   }
 
@@ -579,16 +579,22 @@ h1 {
 
   .current-food {
     font-size: 13px;
+    line-height: 1.15;
+    margin: 0;
   }
 
   .cta-help {
-    font-size: 13px;
-    line-height: 1.2;
+    font-size: 12px;
+    line-height: 1.15;
+    margin: 0;
   }
 
   .message {
-    font-size: 13px;
-    line-height: 1.2;
+    font-size: 12px;
+    line-height: 1.15;
+    margin: 0;
+    min-height: 16px;
+    padding: 2px 6px;
   }
 }
 
@@ -622,7 +628,7 @@ h1 {
   }
 
   .center-panel {
-    width: min(206px, 68vw);
+    width: min(202px, 66vw);
   }
 
   .current-food {
