@@ -514,44 +514,47 @@ h1 {
   }
 
   .board {
-    position: relative;
-    display: block;
-    min-height: clamp(560px, 70vh, 700px);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: auto auto auto;
+    column-gap: 8px;
+    row-gap: 10px;
+    align-items: stretch;
+    grid-template-areas:
+      "olya irina katya"
+      ". center ."
+      "veronika sasha dasha";
+    min-height: 0;
   }
 
   .arena {
     padding: 6px;
-    overflow: hidden;
+    overflow: auto;
   }
 
   .frog {
-    position: absolute;
-    left: var(--frog-x, 50%);
-    top: var(--frog-y, 50%);
-    width: 96px;
-    min-height: 108px;
-    margin-left: -48px;
-    margin-top: -54px;
+    position: relative;
+    left: auto;
+    top: auto;
+    margin: 0;
+    width: auto;
+    min-height: 112px;
     z-index: 2;
+    justify-self: stretch;
+    align-self: stretch;
   }
 
   .frog-state {
     font-size: 12px;
   }
 
-  .area-irina { --frog-x: 50%; --frog-y: 11%; }
-  .area-katya { --frog-x: 84%; --frog-y: 32%; }
-  .area-dasha { --frog-x: 84%; --frog-y: 68%; }
-  .area-sasha { --frog-x: 50%; --frog-y: 89%; }
-  .area-veronika { --frog-x: 16%; --frog-y: 68%; }
-  .area-olya { --frog-x: 16%; --frog-y: 32%; }
-
   .center-panel {
-    position: absolute;
-    left: 50%;
-    top: 51%;
-    transform: translate(-50%, -50%);
-    width: min(236px, 64vw);
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
+    width: min(100%, 320px);
+    margin-inline: auto;
     z-index: 3;
   }
 
@@ -600,10 +603,7 @@ h1 {
 
 @media (max-width: 390px) {
   .frog {
-    width: 90px;
     min-height: 106px;
-    margin-left: -45px;
-    margin-top: -53px;
   }
 
   .frog-visual {
@@ -628,7 +628,7 @@ h1 {
   }
 
   .center-panel {
-    width: min(202px, 66vw);
+    width: min(100%, 280px);
   }
 
   .current-food {
